@@ -7,7 +7,7 @@ import Row from 'react-bootstrap/Row';
 import ServerContext from './ServerContext';
 
 function AddDevice() {
-    const { addServer } = useContext(ServerContext);
+    const { servers, addServer } = useContext(ServerContext);
 
     const [name, setName] = useState('');
     const [ipAddress, setIPAddress] = useState('');
@@ -26,6 +26,13 @@ function AddDevice() {
 
         if (!isValidIP) {
             setIpError('Неправильный формат IP-адреса');
+            return;
+        }
+
+        const existingServer = servers.find((server) => server.ipAddress === ipAddress);
+
+        if (existingServer) {
+            setIpError('Сервер с таким IP-адресом уже существует');
             return;
         }
 
@@ -117,10 +124,7 @@ function AddDevice() {
                 </Row>
             </Form>
         ) : (
-
             <Button className="mb-3" onClick={toggleForm}>Добавить</Button>
-
-
         )
     );
 }

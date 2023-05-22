@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -22,19 +22,27 @@ function ServerList() {
 
         const handleOptionChange = (selectedOption) => {
             setSelectedOption(selectedOption);
-            // Вы можете выполнять любую другую логику или обновлять данные сервера здесь на основе выбранной опции
-            // Например, вы можете обновить объект 'server' значением выбранной опции
+            localStorage.setItem(`selectedOption-${server.ipAddress}`, selectedOption);
         };
 
+        useEffect(() => {
+            const savedOption = localStorage.getItem(`selectedOption-${server.ipAddress}`);
+            if (savedOption) {
+                setSelectedOption(savedOption);
+            }
+        }, []);
+
         return (
-            <Card style={{ height: '30rem', width: '20rem', marginRight: '10px' }}>
+            <Card style={{ height: '15rem', width: '20rem', marginRight: '10px' }}>
                 <Card.Body>
                     <Card.Title>{server.name}</Card.Title>
+
                     <Card.Text>
-                        <strong>IP Address:</strong> {server.ipAddress}
+                        IP-адрес: {server.ipAddress}
                         <br />
-                        <strong>Port:</strong> {server.port}
+                        Порт: {server.port}
                     </Card.Text>
+                    <Row>
                     <ButtonGroup>
                         {[1, 2, 3, 4, 5, 6].map((option) => (
                             <ToggleButton
@@ -51,12 +59,18 @@ function ServerList() {
                             </ToggleButton>
                         ))}
                     </ButtonGroup>
-                    <Button className="me-1" variant="outline-danger" onClick={() => handleDelete(server)}>
-                        Удалить
-                    </Button>
-                    <Button className="me-1" variant="outline-primary" onClick={() => handleEdit(server)}>
-                        Изменить
-                    </Button>
+                    </Row>
+                    <br/>
+                    <Row>
+                   <ButtonGroup>
+                       <Button className="me-1" variant="outline-primary" onClick={() => handleEdit(server)}>
+                           Изменить
+                       </Button>
+                       <Button className="me-1" variant="outline-danger" onClick={() => handleDelete(server)}>
+                           Удалить
+                       </Button>
+                   </ButtonGroup>
+                    </Row>
                 </Card.Body>
             </Card>
         );

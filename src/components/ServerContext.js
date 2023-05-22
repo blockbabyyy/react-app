@@ -1,21 +1,20 @@
 import React, { createContext, useState } from 'react';
 
-// Создаем контекст
 const ServerContext = createContext();
 
-// Создаем провайдер контекста
 export const ServerProvider = ({ children }) => {
     const [servers, setServers] = useState([]);
 
     const addServer = (newServer) => {
-        setServers([...servers, newServer]);
+        const updatedData = [...servers, newServer];
+        setServers(updatedData);
+        localStorage.setItem('serverData', JSON.stringify(updatedData));
     };
 
     const deleteServer = (serverToDelete) => {
-        const updatedServers = servers.filter(
-            (server) => server.ipAddress !== serverToDelete.ipAddress
-        );
+        const updatedServers = servers.filter((server) => server.ipAddress !== serverToDelete.ipAddress);
         setServers(updatedServers);
+        localStorage.setItem('serverData', JSON.stringify(updatedServers));
     };
 
     const editServer = (editedServer) => {
@@ -23,7 +22,15 @@ export const ServerProvider = ({ children }) => {
             server.ipAddress === editedServer.ipAddress ? editedServer : server
         );
         setServers(updatedServers);
+        localStorage.setItem('serverData', JSON.stringify(updatedServers));
     };
+
+    useState(() => {
+        const savedData = localStorage.getItem('serverData');
+        if (savedData) {
+            setServers(JSON.parse(savedData));
+        }
+    }, []);
 
     const serverContextValue = {
         servers,
@@ -32,11 +39,7 @@ export const ServerProvider = ({ children }) => {
         editServer,
     };
 
-    return (
-        <ServerContext.Provider value={serverContextValue}>
-            {children}
-        </ServerContext.Provider>
-    );
+    return <ServerContext.Provider value={serverContextValue}>{children}</ServerContext.Provider>;
 };
 
 export default ServerContext;
