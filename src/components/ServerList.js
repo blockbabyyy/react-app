@@ -5,6 +5,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ServerContext from './ServerContext';
 import { Col, Row } from 'react-bootstrap';
+import axios from "axios";
 
 function ServerList() {
     const { servers, deleteServer, editServer } = useContext(ServerContext);
@@ -23,7 +24,17 @@ function ServerList() {
         const handleOptionChange = (selectedOption) => {
             setSelectedOption(selectedOption);
             localStorage.setItem(`selectedOption-${server.ipAddress}`, selectedOption);
+            axios.get(`http://${server.ipAddress}:${server.port}/api/option?selectedOption=${selectedOption}`)
+                .then((response) => {
+                    // Обработка ответа
+                    console.log(response.data);
+                })
+                .catch((error) => {
+                    // Обработка ошибок
+                    console.error(error);
+                });
         };
+
 
         useEffect(() => {
             const savedOption = localStorage.getItem(`selectedOption-${server.ipAddress}`);
@@ -57,16 +68,17 @@ function ServerList() {
                             >
                                 {option}
                             </ToggleButton>
+
                         ))}
                     </ButtonGroup>
                     </Row>
                     <br/>
                     <Row>
-                   <ButtonGroup>
-                       <Button className="me-1" variant="outline-primary" onClick={() => handleEdit(server)}>
+                   <ButtonGroup justify>
+                       <Button  className="me-1" variant="outline-primary" disabled onClick={() => handleEdit(server)}>
                            Изменить
                        </Button>
-                       <Button className="me-1" variant="outline-danger" onClick={() => handleDelete(server)}>
+                       <Button  className="me-1" variant="outline-danger" onClick={() => handleDelete(server)}>
                            Удалить
                        </Button>
                    </ButtonGroup>
