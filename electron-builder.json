@@ -1,0 +1,16 @@
+{
+  "appId": "com.example.app", // Идентификатор вашего приложения
+  "directories": {
+    "output": "dist" // Папка, в которой будет располагаться установщик приложения
+  },
+  "mac": {
+    "target": "dmg" // Для MacOS
+  },
+  "win": {
+    "target": "nsis" // Для Windows
+  },
+  "linux": {
+    "target": "AppImage" // Для Linux
+  },
+  "main": "./electron/electron.js"
+}
